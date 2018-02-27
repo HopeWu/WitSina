@@ -17,19 +17,45 @@ wait2 = WebDriverWait(browser2, 20)
 browser2.set_window_size(1400, 900)
 
 MAX_PAGE = 9
-
+'''
 def savePicSet(set_addr):
     next_pic_addr = set_addr + '#p=2'
     browser2.get(next_pic_addr)
-    total = wait2.until(
+    wait2.until(
         EC.presence_of_element_located((By.CSS_SELECTOR, '#imgTotal'))
-    ).text
-    print(next_pic_addr)
-    print(total)
-    for page in range(3, total +1):
+    )
+    html = browser2.page_source
+    doc = pc(html)
+    total = doc('#imgTotal').text()
+    #print(total)
+    for page in range(3, int(total) +1):
         tail = '#p=' + str(page)
         next_pic_addr = set_addr + tail
+        print('  '+next_pic_addr)
         browser2.get(next_pic_addr)
+        html = browser2.page_source
+        doc = pc(html)
+        img_addr = doc('div')
+'''
+
+def savePicSet(set_addr):
+    next_pic_addr = set_addr + '#p=2'
+    print(next_pic_addr )
+    try:
+        browser2.get(next_pic_addr)
+    except Exception:
+        savePicSet(set_addr)
+    '''
+    wait2.until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, '#imgTotal'))
+    )
+    '''
+    html = browser2.page_source
+    doc = pc(html)
+    items = doc('.scroll-section > .scroll-item').items()
+    for item in items:
+        print(item.find('.img-wrap img').attr('src'))
+
 
 def getPicSet():
     print(" in get pic set")
