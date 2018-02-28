@@ -1,4 +1,3 @@
-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -8,11 +7,21 @@ from pyquery import PyQuery as pc
 from config import *
 import pymongo
 
-browser = webdriver.PhantomJS(service_args=SERVICE_ARGS)
+cap = webdriver.DesiredCapabilities.PHANTOMJS
+cap["phantomjs.page.settings.resourceTimeout"] = 1000
+cap["phantomjs.page.settings.loadImages"] = True
+cap["phantomjs.page.settings.disk-cache"] = True
+cap["phantomjs.page.settings.userAgent"] = "Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:50.0) Gecko/20100101 Firefox/50.0"
+cap["phantomjs.page.customHeaders.User-Agent"] = 'Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:50.0) Gecko/20100101 Firefox/50.0'
+
+browser = webdriver.PhantomJS(service_args=SERVICE_ARGS, desired_capabilities=cap)
+#browser = webdriver.PhantomJS(service_args=SERVICE_ARGS)
+
 wait = WebDriverWait(browser, 20)
 browser.set_window_size(1400, 900)
 
-browser2 = webdriver.PhantomJS(service_args=SERVICE_ARGS)
+browser2 = webdriver.PhantomJS(service_args=SERVICE_ARGS, desired_capabilities=cap)
+#browser2 = webdriver.PhantomJS(service_args=SERVICE_ARGS)
 wait2 = WebDriverWait(browser2, 20)
 browser2.set_window_size(1400, 900)
 
@@ -41,10 +50,10 @@ def savePicSet(set_addr):
 def savePicSet(set_addr):
     next_pic_addr = set_addr + '#p=2'
     print(next_pic_addr )
-    try:
-        browser2.get(next_pic_addr)
-    except Exception:
-        savePicSet(set_addr)
+#    try:
+    browser2.get(next_pic_addr)
+#except Exception:
+#        savePicSet(set_addr)
     '''
     wait2.until(
         EC.presence_of_element_located((By.CSS_SELECTOR, '#imgTotal'))
