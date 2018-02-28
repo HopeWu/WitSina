@@ -6,6 +6,7 @@ import re
 from pyquery import PyQuery as pc
 from config import *
 import pymongo
+import urllib.request
 
 cap = webdriver.DesiredCapabilities.PHANTOMJS
 cap["phantomjs.page.settings.resourceTimeout"] = 1000
@@ -16,6 +17,8 @@ cap["phantomjs.page.customHeaders.User-Agent"] = 'Mozilla/5.0 (Windows NT 6.3; W
 
 browser = webdriver.PhantomJS(service_args=SERVICE_ARGS, desired_capabilities=cap)
 #browser = webdriver.PhantomJS(service_args=SERVICE_ARGS)
+
+imageNum = 0
 
 wait = WebDriverWait(browser, 20)
 browser.set_window_size(1400, 900)
@@ -50,10 +53,7 @@ def savePicSet(set_addr):
 def savePicSet(set_addr):
     next_pic_addr = set_addr + '#p=2'
     print(next_pic_addr )
-#    try:
     browser2.get(next_pic_addr)
-#except Exception:
-#        savePicSet(set_addr)
     '''
     wait2.until(
         EC.presence_of_element_located((By.CSS_SELECTOR, '#imgTotal'))
@@ -64,6 +64,15 @@ def savePicSet(set_addr):
     items = doc('.scroll-section > .scroll-item').items()
     for item in items:
         print(item.find('.img-wrap img').attr('src'))
+        image_url = item.find('.img-wrap img').attr('src')
+        if(image_url):
+            global imageNum
+            f = open('./image/image'+str(imageNum)+'.jpg','wb')
+            imageNum = imageNum + 1
+            f.write((urllib.request.urlopen(image_url)).read())
+            #print((urllib.request.urlopen(image_url)).read())
+            f.close()
+
 
 
 def getPicSet():
